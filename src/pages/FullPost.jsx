@@ -16,6 +16,7 @@ export const FullPost = () => {
   const dispatch = useDispatch();
 
   const { comments } = useSelector((state) => state.comments);
+  const commentsPost = comments.items.map((item) => item.post);
 
   useEffect(() => {
     dispatch(fetchComments());
@@ -46,7 +47,7 @@ export const FullPost = () => {
         imageUrl={data.imageUrl ? `http://localhost:4444${data.imageUrl}` : ''}
         createdAt={data.createdAt}
         viewsCount={data.viewsCount}
-        commentsCount={3}
+        commentsCount={[...commentsPost.filter((item) => data._id.includes(item))].length}
         user={data.user}
         tags={data.tags}
         isFullPost>

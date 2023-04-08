@@ -27,6 +27,7 @@ export const SearchPostTag = () => {
   }, []);
 
   const filterPost = posts.items.filter((item) => item.tags.find((tag) => name.includes(tag)));
+  const commentsPost = comments.items.map((item) => item.post);
 
   return (
     <>
@@ -38,13 +39,14 @@ export const SearchPostTag = () => {
               <Post key={index} isLoading={true} />
             ) : (
               <Post
+                key={obj._id}
                 id={obj._id}
                 title={obj.title}
                 imageUrl={obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ''}
                 user={obj.user}
                 createdAt={obj.createdAt}
                 viewsCount={obj.viewsCount}
-                commentsCount={3}
+                commentsCount={[...commentsPost.filter((item) => obj._id.includes(item))].length}
                 tags={obj.tags}
                 isEditable={userData?._id === obj.user._id}
               />

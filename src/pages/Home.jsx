@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+
 import Grid from '@mui/material/Grid';
 
 import { Post } from '../components/Post';
@@ -29,12 +30,22 @@ export const Home = () => {
 
   const popularPosts = [...posts.items].sort((a, b) => (a.viewsCount < b.viewsCount ? 1 : -1));
   const newPosts = [...posts.items].sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+  const commentsPost = comments.items.map((item) => item.post);
+
+  const [value, setValue] = React.useState('one');
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-        <Tab onClick={() => setPopulate(false)} label="Новые" />
-        <Tab onClick={() => setPopulate(true)} label="Популярные" />
+      <Tabs
+        style={{ marginBottom: 15 }}
+        value={value}
+        onChange={handleChange}
+        aria-label="basic tabs example">
+        <Tab onClick={() => setPopulate(false)} label="Новые" value="one" />
+        <Tab onClick={() => setPopulate(true)} label="Популярные" value="two" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
@@ -44,13 +55,14 @@ export const Home = () => {
                 <Post key={index} isLoading={true} />
               ) : (
                 <Post
+                  key={obj._id}
                   id={obj._id}
                   title={obj.title}
                   imageUrl={obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ''}
                   user={obj.user}
                   createdAt={obj.createdAt}
                   viewsCount={obj.viewsCount}
-                  commentsCount={3}
+                  commentsCount={[...commentsPost.filter((item) => obj._id.includes(item))].length}
                   tags={obj.tags}
                   isEditable={userData?._id === obj.user._id}
                 />
